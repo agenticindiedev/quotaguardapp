@@ -5,7 +5,7 @@ This guide explains how to test the AI Usage Tracker app.
 ## Running the App in Xcode
 
 1. **Build and Run**:
-   - Select the `AIUsageTracker` scheme in Xcode
+   - Select the `QuotaGuard` scheme in Xcode
    - Press `Cmd+R` or click the Run button
    - The app will build and launch
 
@@ -125,7 +125,7 @@ If you have access to real credentials:
 
 ### Check App Status
 - Open Activity Monitor
-- Search for "AIUsageTracker"
+- Search for "QuotaGuard"
 - Verify the app is running
 
 ### Menu Bar Not Showing?

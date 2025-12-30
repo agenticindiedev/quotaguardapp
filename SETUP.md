@@ -30,7 +30,7 @@ cd apps/ai-usage-tracker
 ### 2. Open in Xcode
 
 ```bash
-open AIUsageTracker.xcodeproj
+open QuotaGuard.xcodeproj
 ```
 
 If you don't have an Xcode project yet, you can create one:
@@ -42,7 +42,7 @@ swift package generate-xcodeproj
 
 ### 3. Configure the Project
 
-1. Select the `AIUsageTracker` target
+1. Select the `QuotaGuard` target
 2. Go to Signing & Capabilities
 3. Add your development team
 4. Enable App Sandbox if needed

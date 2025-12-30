@@ -31,6 +31,6 @@
 	<key>LSApplicationCategoryType</key>
 	<string>public.app-category.utilities</string>
 	<key>CFBundleDisplayName</key>
-	<string>AI Usage Tracker</string>
+	<string>QuotaGuard</string>
 </dict>
 </plist>

@@ -52,21 +52,15 @@ struct MenuBarView: View {
             Divider()
 
             // Footer Actions
-            VStack(spacing: 8) {
-                SettingsLink {
-                    Text("Settings")
-                        .frame(maxWidth: .infinity)
-                }
-                .buttonStyle(.bordered)
-
+            HStack {
                 Button("Quit") {
                     NSApplication.shared.terminate(nil)
                 }
                 .buttonStyle(.bordered)
                 .foregroundColor(.red)
-                .frame(maxWidth: .infinity)
             }
-            .padding()
+            .padding(.horizontal)
+            .padding(.vertical, 8)
         }
         .frame(width: 320, height: 500)
     }
@@ -78,6 +72,10 @@ struct ServiceRowView: View {
     let service: ServiceType
     let isAuthenticated: Bool
     let metrics: UsageMetrics?
+
+    @StateObject private var authManager = AuthenticationManager.shared
+    @State private var isExpanded: Bool = false
+    @State private var apiKeyInput: String = ""
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -93,11 +91,19 @@ struct ServiceRowView: View {
                     if let metrics = metrics {
                         StatusIndicator(status: metrics.overallStatus)
                     }
+
+                    // Show gear button to manage key when authenticated
+                    Button(action: { isExpanded.toggle() }) {
+                        Image(systemName: isExpanded ? "chevron.up" : "gearshape")
+                            .font(.caption)
+                    }
+                    .buttonStyle(.plain)
+                    .foregroundColor(.secondary)
                 } else {
-                    SettingsLink {
+                    Button(action: { isExpanded.toggle() }) {
                         HStack(spacing: 4) {
-                            Image(systemName: "gearshape")
-                            Text("Configure")
+                            Image(systemName: isExpanded ? "chevron.up" : "gearshape")
+                            Text(isExpanded ? "Close" : "Configure")
                         }
                         .font(.caption)
                     }
@@ -125,10 +131,75 @@ struct ServiceRowView: View {
                 Text("Updated: \(formatDate(metrics.lastUpdated))")
                     .font(.caption)
                     .foregroundColor(.secondary)
-            } else if !isAuthenticated {
+            } else if !isAuthenticated && !isExpanded {
                 Text("Not configured")
                     .font(.caption)
                     .foregroundColor(.secondary)
+            }
+
+            // Inline settings section
+            if isExpanded {
+                Divider()
+
+                VStack(alignment: .leading, spacing: 8) {
+                    if isAuthenticated {
+                        // Show masked key and remove button
+                        HStack {
+                            Image(systemName: "checkmark.circle.fill")
+                                .foregroundColor(.green)
+                            Text("API Key configured")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+
+                        Button(action: {
+                            removeApiKey()
+                            isExpanded = false
+                        }) {
+                            HStack {
+                                Image(systemName: "trash")
+                                Text("Remove Key")
+                            }
+                            .font(.caption)
+                        }
+                        .buttonStyle(.bordered)
+                        .foregroundColor(.red)
+                    } else {
+                        // Show input field for new key
+                        Text(keyPlaceholder)
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+
+                        SecureField("Paste API key here...", text: $apiKeyInput)
+                            .textFieldStyle(.roundedBorder)
+                            .font(.caption)
+
+                        HStack {
+                            Button(action: {
+                                saveApiKey()
+                            }) {
+                                HStack {
+                                    Image(systemName: "checkmark")
+                                    Text("Save")
+                                }
+                                .font(.caption)
+                            }
+                            .buttonStyle(.borderedProminent)
+                            .disabled(apiKeyInput.isEmpty)
+
+                            Button(action: {
+                                openHelpUrl()
+                            }) {
+                                HStack {
+                                    Image(systemName: "questionmark.circle")
+                                    Text("Help")
+                                }
+                                .font(.caption)
+                            }
+                            .buttonStyle(.bordered)
+                        }
+                    }
+                }
             }
         }
         .padding()
@@ -141,6 +212,57 @@ struct ServiceRowView: View {
             return colorForStatus(metrics.overallStatus)
         }
         return .gray
+    }
+
+    private var keyPlaceholder: String {
+        switch service {
+        case .claude:
+            return "Admin API Key (sk-ant-admin...)"
+        case .openai:
+            return "Admin API Key"
+        case .cursor:
+            return ""
+        }
+    }
+
+    private func saveApiKey() {
+        switch service {
+        case .claude:
+            _ = authManager.setClaudeAdminKey(apiKeyInput)
+        case .openai:
+            _ = authManager.setOpenAIAdminKey(apiKeyInput)
+        case .cursor:
+            break
+        }
+        apiKeyInput = ""
+        isExpanded = false
+    }
+
+    private func removeApiKey() {
+        switch service {
+        case .claude:
+            authManager.removeClaudeAdminKey()
+        case .openai:
+            authManager.removeOpenAIAdminKey()
+        case .cursor:
+            break
+        }
+    }
+
+    private func openHelpUrl() {
+        let urlString: String
+        switch service {
+        case .claude:
+            urlString = "https://console.anthropic.com/settings/admin-keys"
+        case .openai:
+            urlString = "https://platform.openai.com/settings/organization/admin-keys"
+        case .cursor:
+            return
+        }
+
+        if let url = URL(string: urlString) {
+            NSWorkspace.shared.open(url)
+        }
     }
 
     private func colorForStatus(_ status: UsageStatus) -> Color {
@@ -162,41 +284,46 @@ struct ServiceRowView: View {
 
 struct CursorServiceRow: View {
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            // Header
-            HStack {
-                Image(systemName: ServiceType.cursor.iconName)
-                    .foregroundColor(.gray)
-                Text(ServiceType.cursor.displayName)
-                    .font(.headline)
-                Spacer()
-
-                Button(action: {
-                    CursorService.shared.openTweetRequest()
-                }) {
-                    HStack(spacing: 4) {
-                        Text("𝕏")
-                            .font(.system(size: 12, weight: .bold))
-                        Text("Post")
-                            .font(.caption)
-                    }
+        ZStack(alignment: .topTrailing) {
+            // Disabled card content with opacity
+            VStack(alignment: .leading, spacing: 12) {
+                // Header
+                HStack {
+                    Image(systemName: ServiceType.cursor.iconName)
+                        .foregroundColor(.gray)
+                    Text(ServiceType.cursor.displayName)
+                        .font(.headline)
+                    Spacer()
                 }
-                .buttonStyle(.bordered)
-                .controlSize(.small)
-                .help("Post on X to request Cursor usage API")
-            }
 
-            HStack {
-                Image(systemName: "xmark.circle")
-                    .foregroundColor(.orange)
-                Text("Not available")
+                HStack {
+                    Image(systemName: "xmark.circle")
+                        .foregroundColor(.orange)
+                    Text("Not available")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+
+                Text("Cursor doesn't provide a usage API yet")
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
+            .opacity(0.5)
 
-            Text("Cursor doesn't provide a usage API yet")
-                .font(.caption)
-                .foregroundColor(.secondary)
+            // Tweet button at full opacity
+            Button(action: {
+                CursorService.shared.openTweetRequest()
+            }) {
+                HStack(spacing: 4) {
+                    Text("𝕏")
+                        .font(.system(size: 12, weight: .bold))
+                    Text("Request API")
+                        .font(.caption)
+                }
+            }
+            .buttonStyle(.borderedProminent)
+            .controlSize(.small)
+            .help("Post on X to request Cursor usage API")
         }
         .padding()
         .background(Color(NSColor.controlBackgroundColor))

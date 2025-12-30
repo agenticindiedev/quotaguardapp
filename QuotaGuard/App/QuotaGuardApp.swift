@@ -2,13 +2,13 @@ import SwiftUI
 import UserNotifications
 
 @main
-struct AIUsageTrackerApp: App {
+struct QuotaGuardApp: App {
     @StateObject private var dataManager = UsageDataManager.shared
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     
     init() {
         print("═══════════════════════════════════════")
-        print("🎯 AI Usage Tracker: App Initializing")
+        print("🎯 QuotaGuard: App Initializing")
         print("═══════════════════════════════════════")
     }
     
@@ -24,7 +24,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private var popover: NSPopover?
     
     func applicationDidFinishLaunching(_ notification: Notification) {
-        print("🚀 AI Usage Tracker: Application did finish launching")
+        print("🚀 QuotaGuard: Application did finish launching")
         
         // Create menu bar item
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
@@ -35,7 +35,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
         
         // Set up the menu bar icon
-        if let image = NSImage(systemSymbolName: "chart.bar.fill", accessibilityDescription: "AI Usage Tracker") {
+        if let image = NSImage(systemSymbolName: "chart.bar.fill", accessibilityDescription: "QuotaGuard") {
             image.isTemplate = true // Important for dark mode support
             button.image = image
             print("✅ Menu bar icon set successfully")
@@ -47,7 +47,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
         button.action = #selector(togglePopover)
         button.target = self
-        button.toolTip = "AI Usage Tracker"
+        button.toolTip = "QuotaGuard"
         
         // Create popover
         popover = NSPopover()

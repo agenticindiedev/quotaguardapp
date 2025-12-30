@@ -21,9 +21,9 @@ apps/ai-usage-tracker/
 │   ├── ISSUE_TEMPLATE/
 │   ├── pull_request_template.md
 │   └── CODE_OF_CONDUCT.md
-└── AIUsageTracker/              # Source code
+└── QuotaGuard/              # Source code
     ├── App/
-    │   └── AIUsageTrackerApp.swift
+    │   └── QuotaGuardApp.swift
     ├── Models/
     │   ├── ServiceType.swift
     │   ├── UsageLimit.swift
@@ -47,7 +47,7 @@ apps/ai-usage-tracker/
 ## Key Components
 
 ### App
-- `AIUsageTrackerApp.swift`: Main app entry point, menu bar setup, notifications
+- `QuotaGuardApp.swift`: Main app entry point, menu bar setup, notifications
 
 ### Models
 - `ServiceType.swift`: Enum for supported services (Claude, Codex, Cursor)

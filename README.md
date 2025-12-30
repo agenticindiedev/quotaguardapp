@@ -29,11 +29,11 @@ An open-source macOS widget (WidgetKit + menu bar) that tracks account-level usa
 
 2. Open in Xcode:
    ```bash
-   open AIUsageTracker.xcodeproj
+   open QuotaGuard.xcodeproj
    ```
 
 3. Build and run:
-   - Select the `AIUsageTracker` scheme
+   - Select the `QuotaGuard` scheme
    - Press Cmd+R to build and run
 
 ## Setup

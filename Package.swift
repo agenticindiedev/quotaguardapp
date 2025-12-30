@@ -2,14 +2,14 @@
 import PackageDescription
 
 let package = Package(
-    name: "AIUsageTracker",
+    name: "QuotaGuard",
     platforms: [
         .macOS(.v13)
     ],
     products: [
         .library(
-            name: "AIUsageTracker",
-            targets: ["AIUsageTracker"]
+            name: "QuotaGuard",
+            targets: ["QuotaGuard"]
         ),
     ],
     dependencies: [
@@ -17,9 +17,9 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "AIUsageTracker",
+            name: "QuotaGuard",
             dependencies: [],
-            path: "AIUsageTracker",
+            path: "QuotaGuard",
             exclude: ["Widget"]
         ),
     ]

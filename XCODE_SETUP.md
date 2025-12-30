@@ -10,7 +10,7 @@ This guide explains how to set up the Xcode project for AI Usage Tracker.
 2. File > New > Project
 3. Select "macOS" > "App"
 4. Fill in:
-   - Product Name: `AIUsageTracker`
+   - Product Name: `QuotaGuard`
    - Team: Your development team
    - Organization Identifier: `com.agenticindiedev`
    - Interface: SwiftUI
@@ -30,7 +30,7 @@ swift package generate-xcodeproj
 
 ### 1. Add App Groups Capability
 
-1. Select the `AIUsageTracker` target
+1. Select the `QuotaGuard` target
 2. Go to "Signing & Capabilities"
 3. Click "+ Capability"
 4. Add "App Groups"
@@ -43,7 +43,7 @@ swift package generate-xcodeproj
 2. Select "Widget Extension"
 3. Name: `UsageWidgetExtension`
 4. Include Configuration Intent: No
-5. Add to target: `AIUsageTracker`
+5. Add to target: `QuotaGuard`
 
 ### 3. Configure Widget Extension
 
@@ -54,7 +54,7 @@ swift package generate-xcodeproj
 
 ### 4. Add Source Files
 
-Add all Swift files from `AIUsageTracker/` to the main app target:
+Add all Swift files from `QuotaGuard/` to the main app target:
 - Models/
 - Services/
 - Views/
@@ -101,7 +101,7 @@ Add to Info.plist:
 
 ## Build and Run
 
-1. Select the `AIUsageTracker` scheme
+1. Select the `QuotaGuard` scheme
 2. Press `Cmd+R` to build and run
 3. The app will appear in the menu bar
 

@@ -57,11 +57,11 @@ Thank you for your interest in contributing to AI Usage Tracker! This document p
 
 2. Open in Xcode:
    ```bash
-   open AIUsageTracker.xcodeproj
+   open QuotaGuard.xcodeproj
    ```
 
 3. Build and run:
-   - Select the `AIUsageTracker` scheme
+   - Select the `QuotaGuard` scheme
    - Press Cmd+R to build and run
 
 ## Coding Standards
